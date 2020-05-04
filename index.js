@@ -12,7 +12,12 @@ app.use(bodyParser.urlencoded({extended: false}))
 app.use(bodyParser.json())
 
 let router= new express.Router();
-
+router.get('/api', (req, res)=>{
+	let data = {
+		name:'api'
+	};
+	res.json(data);
+});
 router.get('/api/test', (req, res)=>{
 	let data = {
 		name: 'Jason Krol',
@@ -25,7 +30,10 @@ router.get('/api/test', (req, res)=>{
 
 app.use('/', router);
 
+app.use('*',(req, res)=>{
 
+	res.json({name:null});
+})
 
 //app.get('/', (req, res)=>{
 //	res.send('Hello World');
