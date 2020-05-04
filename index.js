@@ -39,7 +39,7 @@ app.use('*',(req, res)=>{
 //	res.send('Hello World');
 //});
 
-app.listen(app.get('port'), ()=>{
+app.listen(app.get('port'),'0.0.0.0', ()=>{
 	console.log('Server up', app.get('port'));
 });
 
