@@ -1,14 +1,14 @@
 const express=require('express')
 const bodyParser=require('body-parser')
 const _=require('lodash')
-
+const isValid = require('./lib/login').isValid
 
 
 const app=express()
 
 app.set('port', process.env.PORT || 3300)
 
-app.use(bodyParser.urlencoded({extended: false}))
+app.use(bodyParser.urlencoded({extended: true}))
 app.use(bodyParser.json())
 
 let router= new express.Router();
@@ -27,6 +27,22 @@ router.get('/api/test', (req, res)=>{
 
 });
 
+router.post('/api/auth/login', (req,res)=>{
+    // console.log('rx:');
+    console.log('/api/auth/login:')
+    // console.log(req);
+    console.log(req.body);
+
+    let user = req.body.name;
+
+    let pass = req.body.pwd;
+
+    if(isValid(user, pass)){
+        res.json({login:'OK'});
+    }else{
+        res.json({login:'FAIL'});
+    }
+});
 
 app.use('/', router);
 
