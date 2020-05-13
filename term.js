@@ -60,6 +60,7 @@ function handleCmd(cmds) {
 			break;
 		case 'q':
 		case 'quit':
+		case 'quit()':
 			console.log('Bye\n');
 			dbi.close();
 			process.exit(0);
