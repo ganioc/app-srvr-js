@@ -1,11 +1,26 @@
 const prompts = require('prompts');
+const DB = require('./lib/db');
 
 const onCancel = prompt => {
 	console.log('quit')
 	process.exit(1)
 }
 
+const cfgObj = require('./config/config.json');
+console.log('config:')
+console.log(cfgObj);
+
+let dbi = new DB(cfgObj);
+
 (async () => {
+	await new Promise((resolve, reject) => {
+		console.log('To delay');
+		setTimeout(() => {
+			console.log('Delay over\n');
+			resolve();
+		}, 2000);
+	});
+	console.log('To prompts');
 	while (true) {
 		const response = await prompts({
 			type: 'text',
@@ -34,9 +49,19 @@ function handleCmd(cmds) {
 	console.log('args:', args)
 
 	switch (cmd1) {
+		case 'list':
+			dbi.cmdList(args);
+			break;
+		case 'add':
+			dbi.cmdAdd(args);
+			break;
+		case 'delete':
+			dbi.cmdDelete(args);
+			break;
 		case 'q':
 		case 'quit':
 			console.log('Bye\n');
+			dbi.close();
 			process.exit(0);
 			break;
 		default:
