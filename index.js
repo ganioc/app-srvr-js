@@ -48,7 +48,8 @@ app.use('/', router);
 
 app.use('*',(req, res)=>{
 
-	res.json({name:null});
+	res.json({name:null,
+			url:req.url});
 })
 
 //app.get('/', (req, res)=>{
