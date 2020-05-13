@@ -31,12 +31,22 @@ let dbi = new DB(cfgObj);
 			{ onCancel })
 
 		console.log(response)
-		handleCmd(response.cmd)
+		await new Promise((resolve, reject) => {
+			handleCmd(response.cmd, (err) => {
+				if (err) {
+					reject(err);
+				} else {
+					resolve();
+				}
+			})
+		}).catch(err => {
+			console.log('ERR:', err);
+		});
 	}
 
 })();
 
-function handleCmd(cmds) {
+function handleCmd(cmds, cb) {
 	let words = cmds.replace(/\s+/g, ' ').split(' ');
 
 	if (words.length < 1) {
@@ -50,13 +60,13 @@ function handleCmd(cmds) {
 
 	switch (cmd1) {
 		case 'list':
-			dbi.cmdList(args);
+			dbi.cmdList(args, cb);
 			break;
 		case 'add':
-			dbi.cmdAdd(args);
+			dbi.cmdAdd(args, cb);
 			break;
 		case 'delete':
-			dbi.cmdDelete(args);
+			dbi.cmdDelete(args, cb);
 			break;
 		case 'q':
 		case 'quit':
@@ -67,6 +77,7 @@ function handleCmd(cmds) {
 			break;
 		default:
 			console.log('Unknown cmds:', cmd1)
+			cb(null);
 			break;
 	}
 }
