@@ -68,6 +68,9 @@ function handleCmd(cmds, cb) {
 		case 'delete':
 			dbi.cmdDelete(args, cb);
 			break;
+		case 'modify':
+			dbi.cmdModify(args, cb);
+			break;
 		case 'q':
 		case 'quit':
 		case 'quit()':
