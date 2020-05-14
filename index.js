@@ -5,7 +5,7 @@ const bcrypt = require('bcrypt');
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 
-let UserModel = require('./model/user.js');
+let UserModel = require('./lib/model/user.js');
 
 let dbIp = 'localhost';
 let dbPort = '27017';
@@ -19,13 +19,13 @@ const cfgObj = require('./config/config.json');
 console.log('config:')
 console.log(cfgObj);
 
-if (cfgObj) {
+if (!cfgObj) {
 	console.log('No config.json');
 	process.exit(1);
 }
 
-let header = argObj.mongo_user + ':'
-	+ encodeURIComponent(argObj.mongo_passwd) + '@';
+let header = cfgObj.mongo_user + ':'
+	+ encodeURIComponent(cfgObj.mongo_passwd) + '@';
 let uri = 'mongodb://'
 	+ header
 	+ dbIp
@@ -93,7 +93,7 @@ router.post('/api/auth/login', (req, res) => {
 
 	let pass = req.body.pwd;
 
-	UserModel.find({ name: user }, function (error, user) {
+	UserModel.find({ username: user }, function (error, user) {
 		if (error) {
 			console.error('wrong auth');
 			console.log(error);
@@ -101,10 +101,14 @@ router.post('/api/auth/login', (req, res) => {
 		} else {
 			console.log("user:");
 			console.log(user);
+			if(user.length == 0){
+				return res.json({ code: 1, data: { message: 'FAIL' } });
+			}
+
 			console.log("pwd:");
 			console.log(pass);
 
-			bcrypt.compare(pass, user.password, function (err, doesMatch) {
+			bcrypt.compare(pass, user[0].password, function (err, doesMatch) {
 				if (err) {
 					console.error('wrong password');
 					console.log(err);
