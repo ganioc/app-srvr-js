@@ -99,6 +99,11 @@ router.post('/api/auth/login', (req, res) => {
 			console.log(error);
 			res.json({ code: 1, data: { message: 'FAIL' } });
 		} else {
+			console.log("user:");
+			console.log(user);
+			console.log("pwd:");
+			console.log(pass);
+
 			bcrypt.compare(pass, user.password, function (err, doesMatch) {
 				if (err) {
 					console.error('wrong password');
