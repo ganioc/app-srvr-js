@@ -115,20 +115,25 @@ router.post('/api/auth/login', (req, res) => {
 					res.json({ code: 1, data: { message: 'FAIL' } });
 				} else if (doesMatch === true) {
 					console.log('password match');
-					let usertoken = jwt.sign({ username: user.username, role: user.role }, SECRET_KEY_JWT, { expiresIn: '1h' }
+					let user0 = user[0];
+					let usertoken = jwt.sign({ username: user0.username, role: user0.role }, SECRET_KEY_JWT, { expiresIn: '1h' }
 					);
-					console.log('usertoken:');
-					console.log(usertoken);
-
-					return res.json({
+					// console.log('usertoken:');
+					// console.log(usertoken);
+					let resObj = {
 						code: 0,
 						data: {
-							username: user.username,
-							email: user.email,
-							role: user.role,
+							// I will have name in the interface
+							// username in the database. Be careful!!
+							name: user0.username,
+							email: user0.email,
+							role: user0.role,
 							token: usertoken
 						}
-					});
+					};
+					console.log(resObj);
+	
+					return res.json(resObj);
 				} else {
 					console.log('password not match');
 					res.json({ code: 1, data: { message: 'FAIL' } });
