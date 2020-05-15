@@ -57,11 +57,12 @@ app.use(bodyParser.json())
 const authJWT = (req, res, next) => {
 	const token = req.headers['x-access-token'];
 	if (!token) {
-		res.status(401).json({ code: 1 });
-		return;
+		console.log('authJWT no x-access-token');
+		return res.status(401).json({ code: 1 });
 	}
 	jwt.verify(token, SECRET_KEY_JWT, (err, user) => {
 		if (err) {
+			console.log('authJWT fail x-access-token');
 			return res.status(403).json({ code: 1 });
 		}
 		req.user = user;
