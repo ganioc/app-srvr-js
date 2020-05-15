@@ -117,7 +117,10 @@ router.post('/api/auth/login', (req, res) => {
 					console.log('password match');
 					let usertoken = jwt.sign({ username: user.username, role: user.role }, SECRET_KEY_JWT, { expiresIn: '1h' }
 					);
-					res.json({
+					console.log('usertoken:');
+					console.log(usertoken);
+
+					return res.json({
 						code: 0,
 						data: {
 							username: user.username,
