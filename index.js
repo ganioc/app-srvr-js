@@ -7,6 +7,16 @@ const jwt = require('jsonwebtoken');
 
 let UserModel = require('./lib/model/user.js');
 
+
+const ErrCode = {
+	NO_ERR: 0,
+	AUTH_NO_TOKEN: 10001,
+	AUTH_FAIL: 10002,
+	AUTH_ERROR: 10003,
+	AUTH_INVALID_TOKEN: 10004
+
+};
+
 let dbIp = 'localhost';
 let dbPort = '27017';
 let dbName = 'test';
@@ -58,12 +68,12 @@ const authJWT = (req, res, next) => {
 	const token = req.headers['x-access-token'];
 	if (!token) {
 		console.log('authJWT no x-access-token');
-		return res.status(401).json({ code: 1 });
+		return res.status(401).json({ code: ErrCode.AUTH_NO_TOKEN });
 	}
 	jwt.verify(token, SECRET_KEY_JWT, (err, user) => {
 		if (err) {
 			console.log('authJWT fail x-access-token');
-			return res.status(403).json({ code: 1 });
+			return res.status(403).json({ code: ErrCode.AUTH_INVALID_TOKEN });
 		}
 		req.user = user;
 		next();
@@ -75,7 +85,7 @@ router.get('/api', authJWT, (req, res) => {
 	let data = {
 		name: 'api'
 	};
-	res.json({ code: 0, data });
+	res.json({ code: ErrCode.NO_ERR, data });
 });
 router.get('/api/test', (req, res) => {
 	let data = {
@@ -90,20 +100,20 @@ router.post('/api/auth/login', (req, res) => {
 	// console.log(req);
 	console.log(req.body);
 
-	let user = req.body.name;
+	let user = req.body.username;
 
-	let pass = req.body.pwd;
+	let pass = req.body.password;
 
 	UserModel.find({ username: user }, function (error, user) {
 		if (error) {
 			console.error('wrong auth');
 			console.log(error);
-			res.json({ code: 1, data: { message: 'FAIL' } });
+			res.json({ code: ErrCode.AUTH_ERROR, data: { message: 'FAIL' } });
 		} else {
 			console.log("user:");
 			console.log(user);
-			if(user.length == 0){
-				return res.json({ code: 1, data: { message: 'FAIL' } });
+			if (user.length == 0) {
+				return res.json({ code: ErrCode.AUTH_FAIL, data: { message: 'FAIL' } });
 			}
 
 			console.log("pwd:");
@@ -113,7 +123,7 @@ router.post('/api/auth/login', (req, res) => {
 				if (err) {
 					console.error('wrong password');
 					console.log(err);
-					res.json({ code: 1, data: { message: 'FAIL' } });
+					res.json({ code: ErrCode.AUTH_FAIL, data: { message: 'FAIL' } });
 				} else if (doesMatch === true) {
 					console.log('password match');
 					let user0 = user[0];
@@ -126,18 +136,18 @@ router.post('/api/auth/login', (req, res) => {
 						data: {
 							// I will have name in the interface
 							// username in the database. Be careful!!
-							name: user0.username,
+							username: user0.username,
 							email: user0.email,
 							role: user0.role,
 							token: usertoken
 						}
 					};
 					console.log(resObj);
-	
+
 					return res.json(resObj);
 				} else {
 					console.log('password not match');
-					res.json({ code: 1, data: { message: 'FAIL' } });
+					res.json({ code: ErrCode.AUTH_FAIL, data: { message: 'FAIL' } });
 				}
 			});
 		}
