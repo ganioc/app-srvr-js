@@ -174,6 +174,15 @@ router.post('/api/auth/login', (req, res) => {
 	});
 });
 
+router.post('/api/auth/logout', (req, res) => {
+	console.log('/api/auth/logout:')
+
+	res.json({
+		code: 0,
+		data: {}
+	});
+});
+
 app.use('/', router);
 
 app.use('*', (req, res) => {
