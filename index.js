@@ -13,7 +13,8 @@ const ErrCode = {
 	AUTH_NO_TOKEN: 10001,
 	AUTH_FAIL: 10002,
 	AUTH_ERROR: 10003,
-	AUTH_INVALID_TOKEN: 10004
+	AUTH_INVALID_TOKEN: 10004,
+	AUTH_INVALID_NAME: 10005
 
 };
 
@@ -95,16 +96,23 @@ router.get('/api/test', (req, res) => {
 	res.json({ code: 0, data });
 });
 
-router.get('/api/auth/info', (req, res) => {
+router.get('/api/auth/info', authJWT, (req, res) => {
 	console.log('/api/auth/info:');
 	console.log(req.query.username);
+	if (!req.query.username) {
+		res.json({
+			code: ErrCode.AUTH_INVALID_NAME,
+			data: {}
+		})
+	} else {
+		res.json({
+			code: 0, data: {
+				name: req.query.username,
+				avatar: ''
+			}
+		})
+	}
 
-	res.json({
-		code: 0, data: {
-			name: req.query.username,
-			avatar: ''
-		}
-	})
 });
 
 router.post('/api/auth/login', (req, res) => {
