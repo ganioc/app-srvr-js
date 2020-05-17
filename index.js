@@ -95,6 +95,18 @@ router.get('/api/test', (req, res) => {
 	res.json({ code: 0, data });
 });
 
+router.get('/api/auth/info', (req, res) => {
+	console.log('/api/auth/info:');
+	console.log(req.query.username);
+
+	res.json({
+		code: 0, data: {
+			name: req.query.username,
+			avatar: ''
+		}
+	})
+});
+
 router.post('/api/auth/login', (req, res) => {
 	console.log('/api/auth/login:')
 	// console.log(req);
