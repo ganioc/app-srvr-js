@@ -22,6 +22,7 @@
     "lodash": "^4.17.15",
     "md5-hex": "^3.0.1",
     "mongoose": "^5.9.13",
-    "prompts": "^2.3.2"
+    "prompts": "^2.3.2",
+    "svg-captcha": "^1.4.0"
   }
 }
