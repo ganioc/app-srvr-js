@@ -4,6 +4,9 @@ const _ = require('lodash');
 const bcrypt = require('bcrypt');
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
+const session = require('express-session');
+const MongoStore = require('connect-mongo')(session);
+const svgCaptcha = require('svg-captcha')
 
 let UserModel = require('./lib/model/user.js');
 
@@ -53,8 +56,9 @@ mongoose.connect(uri,
 		console.log(error);
 		process.exit(1);
 	});
-/////////////////////////////////////////
 
+
+/////////////////////////////////////////
 
 
 const app = express();
@@ -63,6 +67,12 @@ app.set('port', process.env.PORT || 3300)
 
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
+
+// use MongoStore session
+app.use(session({
+	secret: cfgObj.sessionSecret,
+	store: new MongoStore({ mongooseConnection: mongoose.connection })
+}));
 
 ////////////////////////////////////
 const authJWT = (req, res, next) => {
@@ -82,12 +92,6 @@ const authJWT = (req, res, next) => {
 }
 
 let router = new express.Router();
-router.get('/api', authJWT, (req, res) => {
-	let data = {
-		name: 'api'
-	};
-	res.json({ code: ErrCode.NO_ERR, data });
-});
 router.get('/api/test', (req, res) => {
 	let data = {
 		name: 'Jason Krol',
@@ -95,6 +99,14 @@ router.get('/api/test', (req, res) => {
 	};
 	res.json({ code: 0, data });
 });
+
+router.get('/api', authJWT, (req, res) => {
+	let data = {
+		name: 'api'
+	};
+	res.json({ code: ErrCode.NO_ERR, data });
+});
+
 
 router.get('/api/auth/info', authJWT, (req, res) => {
 	console.log('/api/auth/info:');
@@ -114,6 +126,15 @@ router.get('/api/auth/info', authJWT, (req, res) => {
 	}
 
 });
+
+router.get('/api/auth/captcha', (req, res) => {
+	console.log('/api/auth/captcha');
+	let captcha = svgCaptcha.create();
+	req.session.captcha = captcha.text;
+	console.log('text:', captcha.text);
+	res.type('svg');
+	res.send(captcha.data);
+})
 
 router.post('/api/auth/login', (req, res) => {
 	console.log('/api/auth/login:')
@@ -173,6 +194,7 @@ router.post('/api/auth/login', (req, res) => {
 		}
 	});
 });
+
 
 router.post('/api/auth/logout', (req, res) => {
 	console.log('/api/auth/logout:')
