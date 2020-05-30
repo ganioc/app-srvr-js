@@ -10,6 +10,7 @@ const svgCaptcha = require('svg-captcha')
 
 let UserModel = require('./lib/model/user.js');
 
+const MAX_SESSION_TIME = 3600000
 
 const ErrCode = {
 	NO_ERR: 0,
@@ -71,7 +72,8 @@ app.use(bodyParser.json())
 // use MongoStore session
 app.use(session({
 	secret: cfgObj.sessionSecret,
-	store: new MongoStore({ mongooseConnection: mongoose.connection })
+	store: new MongoStore({ mongooseConnection: mongoose.connection }),
+	maxAge: MAX_SESSION_TIME
 }));
 
 ////////////////////////////////////
@@ -129,11 +131,11 @@ router.get('/api/auth/info', authJWT, (req, res) => {
 
 router.get('/api/auth/captcha', (req, res) => {
 	console.log('/api/auth/captcha');
-	let captcha = svgCaptcha.create();
+	let captcha = svgCaptcha.create({ noise: 2, ignoreChars: '0o1i', size: 5 });
 	req.session.captcha = captcha.text;
 	console.log('text:', captcha.text);
-	res.type('svg');
-	res.send(captcha.data);
+
+	res.json({ code: 0, data: { captcha: captcha.data } });
 })
 
 router.post('/api/auth/login', (req, res) => {
