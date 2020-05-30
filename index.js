@@ -127,7 +127,7 @@ router.get('/api/auth/info', authJWT, (req, res) => {
 
 router.get('/api/auth/captcha', (req, res) => {
 	console.log('/api/auth/captcha');
-	let captcha = svgCaptcha.create({ noise: 2, ignoreChars: '0o1i', size: 5 });
+	let captcha = svgCaptcha.create({ noise: 1, ignoreChars: '0o1i', size: 5 });
 	req.session.captcha = captcha.text.toLowerCase();
 	console.log('text:', captcha.text);
 
