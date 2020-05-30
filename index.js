@@ -83,6 +83,8 @@ const authJWT = (req, res, next) => {
 	if (!token) {
 		console.log('authJWT no x-access-token');
 		return res.status(401).json({ code: ErrCode.AUTH_NO_TOKEN });
+	} else {
+		console.log('authJWT pass')
 	}
 	jwt.verify(token, SECRET_KEY_JWT, (err, user) => {
 		if (err) {
@@ -113,21 +115,14 @@ router.get('/api', authJWT, (req, res) => {
 
 router.get('/api/auth/info', authJWT, (req, res) => {
 	console.log('/api/auth/info:');
-	console.log(req.query.username);
-	if (!req.query.username) {
-		res.json({
-			code: ErrCode.AUTH_INVALID_NAME,
-			data: {}
-		})
-	} else {
-		res.json({
-			code: 0, data: {
-				name: req.session.username,
-				role: req.session.role
-			}
-		})
-	}
+	console.log(req.session.username, req.session.role);
 
+	res.json({
+		code: 0, data: {
+			name: req.session.username,
+			role: req.session.role
+		}
+	})
 });
 
 router.get('/api/auth/captcha', (req, res) => {
