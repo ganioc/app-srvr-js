@@ -18,7 +18,8 @@ const ErrCode = {
 	AUTH_FAIL: 10002,
 	AUTH_ERROR: 10003,
 	AUTH_INVALID_TOKEN: 10004,
-	AUTH_INVALID_NAME: 10005
+	AUTH_INVALID_NAME: 10005,
+	AUTH_INVALID_CAPTCHA: 10006,
 
 };
 
@@ -121,8 +122,8 @@ router.get('/api/auth/info', authJWT, (req, res) => {
 	} else {
 		res.json({
 			code: 0, data: {
-				name: req.query.username,
-				avatar: ''
+				name: req.session.username,
+				role: req.session.role
 			}
 		})
 	}
@@ -142,6 +143,14 @@ router.post('/api/auth/login', (req, res) => {
 	console.log('/api/auth/login:')
 	// console.log(req);
 	console.log(req.body);
+
+	let captcha_text = req.body.captcha;
+
+	if (req.session.captcha !== captcha_text) {
+		console.error('wrong captcha');
+		res.json({ code: ErrCode.AUTH_INVALID_CAPTCHA, data: { message: 'FAIL' } });
+		return;
+	}
 
 	let user = req.body.username;
 
@@ -186,6 +195,9 @@ router.post('/api/auth/login', (req, res) => {
 						}
 					};
 					console.log(resObj);
+					req.session.username = user0.username;
+					req.session.role = user0.role;
+					req.session.token = usertoken;
 
 					return res.json(resObj);
 				} else {
@@ -200,7 +212,7 @@ router.post('/api/auth/login', (req, res) => {
 
 router.post('/api/auth/logout', (req, res) => {
 	console.log('/api/auth/logout:')
-
+	req.session.destroy();
 	res.json({
 		code: 0,
 		data: {}
