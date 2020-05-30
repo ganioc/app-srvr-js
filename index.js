@@ -133,7 +133,7 @@ router.get('/api/auth/info', authJWT, (req, res) => {
 router.get('/api/auth/captcha', (req, res) => {
 	console.log('/api/auth/captcha');
 	let captcha = svgCaptcha.create({ noise: 2, ignoreChars: '0o1i', size: 5 });
-	req.session.captcha = captcha.text;
+	req.session.captcha = captcha.text.toLowerCase();
 	console.log('text:', captcha.text);
 
 	res.json({ code: 0, data: { captcha: captcha.data } });
@@ -146,7 +146,7 @@ router.post('/api/auth/login', (req, res) => {
 
 	let captcha_text = req.body.captcha;
 
-	if (req.session.captcha !== captcha_text) {
+	if (req.session.captcha !== captcha_text.toLowerCase()) {
 		console.error('wrong captcha');
 		res.json({ code: ErrCode.AUTH_INVALID_CAPTCHA, data: { message: 'FAIL' } });
 		return;
