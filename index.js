@@ -9,6 +9,7 @@ const MongoStore = require('connect-mongo')(session);
 
 const authRouter = require('./lib/routes/auth')
 const adminRouter = require('./lib/routes/admin')
+const userRouter = require('./lib/routes/user')
 const authJWT = require('./lib/routes/jwt')
 const ErrCode = require('./lib/err')
 

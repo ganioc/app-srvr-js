@@ -65,6 +65,9 @@ function handleCmd(cmds, cb) {
 		case 'add':
 			dbi.cmdAdd(args, cb);
 			break;
+		case 'create':
+			dbi.cmdCreateUserinfo(args, cb);
+			break;
 		case 'delete':
 			dbi.cmdDelete(args, cb);
 			break;
