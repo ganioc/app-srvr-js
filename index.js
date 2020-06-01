@@ -92,6 +92,8 @@ router.get('/api', authJWT, (req, res) => {
 
 authRouter(router);
 adminRouter(router);
+userRouter(router);
+
 
 app.use('/', router);
 
