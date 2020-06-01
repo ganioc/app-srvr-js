@@ -10,20 +10,11 @@ const MongoStore = require('connect-mongo')(session);
 const authRouter = require('./lib/routes/auth')
 const adminRouter = require('./lib/routes/admin')
 const authJWT = require('./lib/routes/jwt')
-
+const ErrCode = require('./lib/err')
 
 const MAX_SESSION_TIME = 3600000
 
-const ErrCode = {
-	NO_ERR: 0,
-	AUTH_NO_TOKEN: 10001,
-	AUTH_FAIL: 10002,
-	AUTH_ERROR: 10003,
-	AUTH_INVALID_TOKEN: 10004,
-	AUTH_INVALID_NAME: 10005,
-	AUTH_INVALID_CAPTCHA: 10006,
 
-};
 
 let dbIp = 'localhost';
 let dbPort = '27017';
