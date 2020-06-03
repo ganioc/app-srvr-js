@@ -6,16 +6,14 @@ const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
 const morgan = require('morgan')
 
-
 const authRouter = require('./lib/routes/auth')
 const adminRouter = require('./lib/routes/admin')
 const userRouter = require('./lib/routes/user')
 const authJWT = require('./lib/routes/jwt')
 const ErrCode = require('./lib/err')
+const logger = require('./lib/logger')
 
 const MAX_SESSION_TIME = 3600000
-
-
 
 let dbIp = 'localhost';
 let dbPort = '27017';
@@ -27,7 +25,9 @@ let dbName = 'test';
 const SECRET_KEY_JWT = process.env.SECRET_KEY_JWT || 'keepsafe';
 const cfgObj = require('./config/config.json');
 console.log('config:')
+logger.info('config:')
 console.log(cfgObj);
+logger.info(cfgObj)
 
 if (!cfgObj) {
 	console.log('No config.json');

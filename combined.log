@@ -1,0 +1,6 @@
+{"message":"config:","level":"info","service":"user-service"}
+{"message":{"mongo_user":"myTester","mongo_passwd":"testWont@123#org","sessionSecret":"54321@foo","platform":{"APPKEY":"950e89e1234s4dsf3d33de4fdsf79c5c","APPID":"204298","TAG":"本来生活","SINGLE_URL":"http://api.umsc.ltd/sms/send"}},"level":"info","service":"user-service"}
+{"message":"config:","level":"info","service":"user-service"}
+{"message":{"mongo_user":"myTester","mongo_passwd":"testWont@123#org","sessionSecret":"54321@foo","platform":{"APPKEY":"950e89e1234s4dsf3d33de4fdsf79c5c","APPID":"204298","TAG":"本来生活","SINGLE_URL":"http://api.umsc.ltd/sms/send"}},"level":"info","service":"user-service"}
+{"message":"/api/auth/info","level":"info","service":"user-service"}
+{"message":"/api/auth/info","level":"info","service":"user-service"}
