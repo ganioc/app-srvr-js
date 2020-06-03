@@ -24,9 +24,11 @@
     "lodash": "^4.17.15",
     "md5-hex": "^3.0.1",
     "mongoose": "^5.9.13",
+    "morgan": "^1.10.0",
     "prompts": "^2.3.2",
     "querystring": "^0.2.0",
     "request": "^2.88.2",
-    "svg-captcha": "^1.4.0"
+    "svg-captcha": "^1.4.0",
+    "winston": "^3.2.1"
   }
 }
