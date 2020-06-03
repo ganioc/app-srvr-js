@@ -1,11 +1,11 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const _ = require('lodash');
-
 const mongoose = require('mongoose');
-
 const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
+const morgan = require('morgan')
+
 
 const authRouter = require('./lib/routes/auth')
 const adminRouter = require('./lib/routes/admin')
@@ -70,6 +70,21 @@ app.use(session({
 	store: new MongoStore({ mongooseConnection: mongoose.connection }),
 	maxAge: MAX_SESSION_TIME
 }));
+
+// use morgan
+app.use(morgan('dev', {
+	skip: function (req, res) {
+		return res.statusCode < 400
+	},
+	stream: process.stderr
+}))
+
+app.use(morgan('dev', {
+	skip: function (req, res) {
+		return res.statusCode >= 400
+	},
+	stream: process.stdout
+}))
 
 ////////////////////////////////////
 
