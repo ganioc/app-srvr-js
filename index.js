@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
 const morgan = require('morgan')
+const util = require('util')
 
 const authRouter = require('./lib/routes/auth')
 const adminRouter = require('./lib/routes/admin')
@@ -25,9 +26,10 @@ let dbName = 'test';
 const SECRET_KEY_JWT = process.env.SECRET_KEY_JWT || 'keepsafe';
 const cfgObj = require('./config/config.json');
 console.log('config:')
-logger.info('config:')
 console.log(cfgObj);
-logger.info(cfgObj)
+logger.info('config:')
+logger.error(util.format('%o', cfgObj))
+logger.info('%O', cfgObj)
 
 if (!cfgObj) {
 	console.log('No config.json');

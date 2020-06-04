@@ -29,6 +29,7 @@
     "querystring": "^0.2.0",
     "request": "^2.88.2",
     "svg-captcha": "^1.4.0",
-    "winston": "^3.2.1"
+    "winston": "^3.2.1",
+    "winston-daily-rotate-file": "^4.4.2"
   }
 }
