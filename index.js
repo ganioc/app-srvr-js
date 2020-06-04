@@ -20,7 +20,7 @@ let dbIp = 'localhost';
 let dbPort = '27017';
 let dbName = 'test';
 
-
+logger.error('================ restart ===============')
 
 ////////////////////////////////////////////////
 const SECRET_KEY_JWT = process.env.SECRET_KEY_JWT || 'keepsafe';
