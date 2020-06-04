@@ -25,14 +25,11 @@ let dbName = 'test';
 ////////////////////////////////////////////////
 const SECRET_KEY_JWT = process.env.SECRET_KEY_JWT || 'keepsafe';
 const cfgObj = require('./config/config.json');
-console.log('config:')
-console.log(cfgObj);
 logger.info('config:')
-logger.error(util.format('%o', cfgObj))
-logger.info('%O', cfgObj)
+logger.info(util.format('%o', cfgObj))
 
 if (!cfgObj) {
-	console.log('No config.json');
+	logger.error('No config.json');
 	process.exit(1);
 }
 
@@ -45,13 +42,14 @@ let uri = 'mongodb://'
 	+ dbPort
 	+ '/' + dbName;
 
-console.log('uri:');
-console.log(uri);
+logger.debug('mongodb uri:');
+logger.debug(uri);
+
 mongoose.connect(uri,
 	{ useNewUrlParser: true })
 	.catch(error => {
-		console.log('Connection error')
-		console.log(error);
+		logger.error('Connection error')
+		logger.error(util.format('%o', error));
 		process.exit(1);
 	});
 
@@ -126,6 +124,7 @@ app.use('*', (req, res) => {
 })
 
 app.listen(app.get('port'), '0.0.0.0', () => {
-	console.log('Server up', app.get('port'));
+	logger.debug('Server up');
+	logger.debug(app.get('port'))
 });
 
