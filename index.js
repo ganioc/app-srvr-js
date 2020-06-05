@@ -70,7 +70,7 @@ app.use(bodyParser.json())
 
 // use MongoStore session
 app.use(session({
-	resave: false, //添加 resave 选项
+	resave: true, //添加 resave 选项
 	saveUninitialized: true, //添加 saveUninitialized 选项
 	secret: cfgObj.sessionSecret,
 	store: new MongoStore({ mongooseConnection: mongoose.connection }),
