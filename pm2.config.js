@@ -15,6 +15,20 @@ module.exports = {
         "PORT": 30000,
         "LOG_LEVEL": 'info'
       }
+    },
+    {
+      name: "worker1",
+      script: "./worker/msgworker.js",
+      log_date_format: "YYYY-MM-DD HH:mm:ss Z",
+      watch: false,
+      env: {
+        "NODE_ENV": "development",
+        "LOG_LEVEL": 'debug'
+      },
+      env_production: {
+        "NODE_ENV": "production",
+        "LOG_LEVEL": 'info'
+      }
     }
   ]
 }

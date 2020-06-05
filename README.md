@@ -11,7 +11,13 @@ req.headers['x-access-token']
 To have a backgound process to check the 
 
 ### bullMQ
-Use it to do background work
+Use it as a MessageQueue to do background work
 
-Shoud I install redis on local machine 1st?
+Shoud I install redis on local machine 1st? v6.0 redis
+
+bullMQ 1.8.12
+
+### MongoDB
+For backend data storage
+
 
