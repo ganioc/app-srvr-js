@@ -8,8 +8,10 @@ const send = require('../lib/bullmq').sendDefaultQueue
 //   queue.add('cars', { color: 'blue' });
 // }, 1000)
 
-setInterval(() => {
-  send({ info: "hello-go" })
-}, 100)
+setInterval(async () => {
+  let result = await send({ info: "hello-go" })
+  console.log(result.id)
+  // if 返回的id不存在的话
+}, 2000)
 
 

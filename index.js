@@ -45,8 +45,12 @@ let uri = 'mongodb://'
 logger.debug('mongodb uri:');
 logger.debug(uri);
 
+mongoose.set('useCreateIndex', true) //加上这个
 mongoose.connect(uri,
-	{ useNewUrlParser: true })
+	{
+		useNewUrlParser: true,
+		useUnifiedTopology: true
+	})
 	.catch(error => {
 		logger.error('Connection error')
 		logger.error(util.format('%o', error));
@@ -66,6 +70,8 @@ app.use(bodyParser.json())
 
 // use MongoStore session
 app.use(session({
+	resave: false, //添加 resave 选项
+	saveUninitialized: true, //添加 saveUninitialized 选项
 	secret: cfgObj.sessionSecret,
 	store: new MongoStore({ mongooseConnection: mongoose.connection }),
 	maxAge: MAX_SESSION_TIME

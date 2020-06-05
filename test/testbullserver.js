@@ -8,15 +8,17 @@ const Worker = require('bullmq').Worker;
 //   }
 // })
 
-
 function handleDefaultJob(data) {
   return new Promise((resolve, reject) => {
     // check db data
     // create the database
     console.log('handleDefaultJob()')
     setTimeout(() => {
-      resolve('ok')
-    });
+      // reject({
+      //   message: 'Fake error msg'
+      // })
+      resolve({})
+    }, 100);
     // 
   })
 }
@@ -35,6 +37,17 @@ const worker = new Worker(bullmq.DEFAULT_QUEUE_NAME, async job => {
     // logger.error('Unrecognized job.name : ' + job.name)
   }
 })
+worker.on('waiting', (job) => {
+  console.log(`\n${job.id} is waiting`)
+})
+worker.on('completed', (job) => {
+  console.log(`${job.id} completed`)
+});
+
+worker.on('failed', (job, err) => {
+  console.log(`${job.id} failed with ${err.message}`)
+})
+
 
 // const worker = new Worker(bullmq.DEFAULT_QUEUE_NAME, async job => {
 //   if (job.name === bullmq.DEFAULT_JOB_NAME) {
