@@ -7,6 +7,7 @@ const bullmq = require('../lib/bullmq')
 // const logger = require('../lib/logger')
 // const util = require('util')
 const setMsg = require('../lib/db/setMsg')
+const ErrCode = require('../lib/err')
 
 
 const cfgObj = require('../config/config.json');
@@ -71,22 +72,82 @@ function handleSingleMsgJob(data) {
     )
 
     // if succeed
-    if (result.code === 0) {
-      resolve({ code: 0 })
-    } else {
+    if (result.code !== 0) {
+      //   resolve({ code: 0 })
+      // } else {
       reject({
         code: result.code,
         message: 'setMsg failed'
       })
+      return
     }
 
+    console.log('setMsg OK')
+
     // save to Msgton
+    result = await setMsgton(
+      data.username,
+      data.mobiles,
+      data.data.smsid
+    )
+    if (result.code !== 0) {
+      reject({
+        code: result.code,
+        message: 'setMsgton failed'
+      })
+      return
+    }
 
     // check status ,
+    result = await checkSingleMsgStatus(data.data.smsid)
 
+    if (result.code !== 0) {
+      reject({
+        code: result.code,
+        message: 'checkMsgStatus failed'
+      })
+      return
+    }
+
+    //
+    let msgObj = null;
+    try {
+      msgObj = JSON.parse(result.data.toString())
+    } catch (e) {
+      console.error('parse checkSingleMsgStatus result.data fail')
+      reject({
+        code: ErrCode.UMSC_JSON_PARSE_FAIL,
+        message: 'JSON parse fail'
+      })
+      return
+    }
+
+    // msg 
+    console.log('msgObj:')
+    console.log(msgObj)
+
+    if (msgObj.result !== 0 && msgObj.result !== "0") {
+      reject({
+        code: ErrCode.UMSC_GET_FAIL,
+        message: 'get feedback fail'
+      })
+      return
+    }
     // update Msgton
+    result = await updateMsgton(
+      msgObj.smsid,
+      msgObj.mobile,
+      msgObj.status)
 
-
+    if (result.code !== 0) {
+      reject({
+        code: result.code,
+        message: 'updateMsgton failed'
+      })
+    }
+    resolve({
+      code: 0
+    })
   })
 }
 
