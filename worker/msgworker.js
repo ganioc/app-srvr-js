@@ -59,6 +59,16 @@ function handleDefaultJob(data) {
   })
 }
 
+/**
+ * 
+ * @param {
+ * 
+ * } data 
+ * 
+ * code:
+ * message: 
+ * 
+ */
 function handleSingleMsgJob(data) {
   return new Promise(async (resolve, reject) => {
     console.log('handleSingleMsgJob()')
