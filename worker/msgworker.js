@@ -1,16 +1,16 @@
-const _ = require('lodash');
+// const _ = require('lodash');
 const mongoose = require('mongoose');
 const util = require('util')
-
 const Worker = require('bullmq').Worker;
 const bullmq = require('../lib/bullmq')
 // const logger = require('../lib/logger')
 // const util = require('util')
-const setMsg = require('../lib/db/setMsg')
 const ErrCode = require('../lib/err')
-
-
+const setMsg = require('../lib/db/setMsg')
+const setMsgton = require('../lib/db/setMsgton')
 const cfgObj = require('../config/config.json');
+const checkSingleMsgStatus = require('../lib/umsc/').checkSingleMsgStatus;
+const updateMsgton = require('../lib/db/updateMsgton')
 
 let dbIp = 'localhost';
 let dbPort = '27017';
@@ -50,12 +50,16 @@ mongoose.connect(uri,
   });
 
 function handleDefaultJob(data) {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     // check db data
     // create the database
     console.log('handleDefaultJob()')
-
+    console.log(data)
     // 
+    resolve({
+      code: 0,
+      message: ''
+    })
   })
 }
 
@@ -70,7 +74,7 @@ function handleDefaultJob(data) {
  * 
  */
 function handleSingleMsgJob(data) {
-  return new Promise(async (resolve, reject) => {
+  return new Promise((resolve, reject) => {
     console.log('handleSingleMsgJob()')
     // save msg to db
     let result = await setMsg(
