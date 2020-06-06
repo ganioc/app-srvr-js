@@ -5,7 +5,7 @@ const Worker = require('bullmq').Worker;
 const bullmq = require('../lib/bullmq')
 // const logger = require('../lib/logger')
 // const util = require('util')
-const ErrCode = require('../lib/err')
+// const ErrCode = require('../lib/err')
 const setMsg = require('../lib/db/setMsg')
 const setMsgton = require('../lib/db/setMsgton')
 const cfgObj = require('../config/config.json');
@@ -56,10 +56,7 @@ function handleDefaultJob(data) {
     console.log('handleDefaultJob()')
     console.log(data)
     // 
-    resolve({
-      code: 0,
-      message: ''
-    })
+    resolve(0)
   })
 }
 
@@ -75,93 +72,76 @@ function handleDefaultJob(data) {
  */
 function handleSingleMsgJob(data) {
   return new Promise((resolve, reject) => {
-    console.log('handleSingleMsgJob()')
-    // save msg to db
-    let result = await setMsg(
-      data.username,
-      1,
-      data.mobiles,
-      data.content,
-      data.data
-    )
+    console.log('handleSingleMsgJob()');
 
-    // if succeed
-    if (result.code !== 0) {
-      //   resolve({ code: 0 })
-      // } else {
-      reject({
-        code: result.code,
-        message: 'setMsg failed'
-      })
-      return
-    }
+    (async () => {
+      // save msg to db
+      let result = await setMsg(
+        data.username,
+        1,
+        data.mobiles,
+        data.content,
+        data.data
+      )
 
-    console.log('setMsg OK')
+      // if succeed
+      if (result.code !== 0) {
+        reject(new Error('setMsg failed'))
+        return
+      }
 
-    // save to Msgton
-    result = await setMsgton(
-      data.username,
-      data.mobiles,
-      data.data.smsid
-    )
-    if (result.code !== 0) {
-      reject({
-        code: result.code,
-        message: 'setMsgton failed'
-      })
-      return
-    }
+      console.log('setMsg OK')
 
-    // check status ,
-    result = await checkSingleMsgStatus(data.data.smsid)
+      // save to Msgton
+      result = await setMsgton(
+        data.username,
+        data.mobiles,
+        data.data.smsid
+      )
+      if (result.code !== 0) {
+        reject(new Error('setMsgton failed'))
+        return
+      }
 
-    if (result.code !== 0) {
-      reject({
-        code: result.code,
-        message: 'checkMsgStatus failed'
-      })
-      return
-    }
+      // check status ,
+      result = await checkSingleMsgStatus(data.data.smsid)
 
-    //
-    let msgObj = null;
-    try {
-      msgObj = JSON.parse(result.data.toString())
-    } catch (e) {
-      console.error('parse checkSingleMsgStatus result.data fail')
-      reject({
-        code: ErrCode.UMSC_JSON_PARSE_FAIL,
-        message: 'JSON parse fail'
-      })
-      return
-    }
+      if (result.code !== 0) {
+        reject(new Error('checkMsgStatus failed'))
+        return
+      }
 
-    // msg 
-    console.log('msgObj:')
-    console.log(msgObj)
+      //
+      let msgObj = null;
+      try {
+        msgObj = JSON.parse(result.data.toString())
+      } catch (e) {
+        console.error('parse checkSingleMsgStatus result.data fail')
+        reject(new Error('JSON parse fail'))
+        return
+      }
 
-    if (msgObj.result !== 0 && msgObj.result !== "0") {
-      reject({
-        code: ErrCode.UMSC_GET_FAIL,
-        message: 'get feedback fail'
-      })
-      return
-    }
-    // update Msgton
-    result = await updateMsgton(
-      msgObj.smsid,
-      msgObj.mobile,
-      msgObj.status)
+      // msg 
+      console.log('msgObj:')
+      console.log(msgObj)
 
-    if (result.code !== 0) {
-      reject({
-        code: result.code,
-        message: 'updateMsgton failed'
-      })
-    }
-    resolve({
-      code: 0
-    })
+      if (msgObj.result !== 0 && msgObj.result !== "0") {
+        reject(new Error('get feedback fail'))
+        return
+      }
+      // update Msgton
+      result = await updateMsgton(
+        msgObj.smsid,
+        msgObj.mobile,
+        msgObj.status)
+
+      if (result.code !== 0) {
+        reject(new Error('updateMsgton failed'))
+        return
+      }
+      resolve(0)
+    })();
+
   })
 }
 
