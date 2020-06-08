@@ -2,7 +2,7 @@ const bcrypt = require('bcrypt');
 const saltRounds = 10;
 
 
-let passwd = "123";
+let passwd = "12345678";
 
 bcrypt.hash(passwd, saltRounds, function (err, hash) {
     // Store hash in your password DB.
