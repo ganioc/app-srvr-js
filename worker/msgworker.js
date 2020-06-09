@@ -75,7 +75,7 @@ function handleSingleMsgJob(data) {
     console.log('handleSingleMsgJob()');
 
     (async () => {
-      // save msg to db
+      // save msg to db, if msg exist pass
       let result = await setMsg(
         data.username,
         1,
@@ -112,14 +112,14 @@ function handleSingleMsgJob(data) {
       }
 
       //
-      let msgObj = null;
-      try {
-        msgObj = JSON.parse(result.data.toString())
-      } catch (e) {
-        console.error('parse checkSingleMsgStatus result.data fail')
-        reject(new Error('JSON parse fail'))
-        return
-      }
+      let msgObj = result.data;
+      // try {
+      //   msgObj = JSON.parse(result.data.toString())
+      // } catch (e) {
+      //   console.error('parse checkSingleMsgStatus result.data fail')
+      //   reject(new Error('JSON parse fail'))
+      //   return
+      // }
 
       // msg 
       console.log('msgObj:')
@@ -139,9 +139,8 @@ function handleSingleMsgJob(data) {
         reject(new Error('updateMsgton failed'))
         return
       }
-      resolve(0)
+      resolve()
     })();
-
   })
 }
 
