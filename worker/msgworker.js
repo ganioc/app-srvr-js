@@ -96,21 +96,22 @@ function handleSingleMsgJob(data) {
       result = await setMsgton(
         data.username,
         data.mobiles,
-        data.data.smsid
+        data.data
       )
       if (result.code !== 0) {
         reject(new Error('setMsgton failed'))
         return
       }
-
+      console.log('setMsgton OK')
       // check status ,
-      result = await checkSingleMsgStatus(data.data.smsid)
+      result = await checkSingleMsgStatus(data.data.data.smsid)
 
       if (result.code !== 0) {
+        console.error('checkMsgStatus failed')
         reject(new Error('checkMsgStatus failed'))
         return
       }
-
+      console.log('checkSingleMsgStatus OK')
       //
       let msgObj = result.data;
       // try {
@@ -126,6 +127,7 @@ function handleSingleMsgJob(data) {
       console.log(msgObj)
 
       if (msgObj.result !== 0 && msgObj.result !== "0") {
+        console.error('msgObj result is NOK')
         reject(new Error('get feedback fail'))
         return
       }
@@ -136,9 +138,11 @@ function handleSingleMsgJob(data) {
         msgObj.status)
 
       if (result.code !== 0) {
+        console.error('updateMsgton failed')
         reject(new Error('updateMsgton failed'))
         return
       }
+      console.log('updateMsgton OK')
       resolve()
     })();
   })
