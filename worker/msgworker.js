@@ -131,11 +131,17 @@ function handleSingleMsgJob(data) {
         reject(new Error('get feedback fail'))
         return
       }
+
+      if (!msgObj.data.status) {
+        console.error('check status got null result')
+        reject(new Error('get status empty'))
+        return
+      }
       // update Msgton
       result = await updateMsgton(
-        msgObj.smsid,
-        msgObj.mobile,
-        msgObj.status)
+        msgObj.data.smsid,
+        msgObj.data.mobile,
+        msgObj.data.status)
 
       if (result.code !== 0) {
         console.error('updateMsgton failed')
