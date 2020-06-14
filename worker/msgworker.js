@@ -153,7 +153,46 @@ function handleSingleMsgJob(data) {
     })();
   })
 }
+function handleMultiMsgJob(data) {
+  return new Promise((resolve, reject) => {
+    console.log('handleMultiMsgJob()');
 
+    (async () => {
+      let result = await setMsg(
+        data.username,
+        2,
+        data.mobiles,
+        data.content,
+        data.data
+      )
+      if (result.code !== 0) {
+        console.error('setMsg failed')
+        reject(new Error('setMsg failed'))
+        return
+      }
+      console.log('setMsg multi OK')
+
+      // save to Msgton
+      for (let i = 0; i < data.mobiles.length; i++) {
+        result = await setMsgton(
+          data.username,
+          [data.mobiles[i]],
+          data.data
+        )
+        if (result.code !== 0) {
+          reject(new Error('setMsgton failed'))
+          return
+        }
+      }
+      console.log('setMsgton OK')
+
+      // result = await checkMultiMsgStatus(data.data.data.smsid)
+
+      console.log('updateMsgton OK')
+      resolve()
+    })();
+  });
+}
 const worker = new Worker(bullmq.DEFAULT_QUEUE_NAME, async job => {
   if (job.name === bullmq.DEFAULT_JOB_NAME) {
     console.log("Receive job:" + bullmq.DEFAULT_JOB_NAME);
@@ -166,6 +205,12 @@ const worker = new Worker(bullmq.DEFAULT_QUEUE_NAME, async job => {
     console.log(`${job.id}`)
     console.log(job.data)
     await handleSingleMsgJob(job.data)
+  }
+  else if (job.name === bullmq.MULTI_MSG_JOB) {
+    console.log("Receive job:" + bullmq.MULTI_MSG_JOB)
+    console.log(`${job.id}`)
+    console.log(job.data)
+    await handleMultiMsgJob(job.data)
   }
   else {
     console.error('Unrecognized job.name : ' + job.name)
