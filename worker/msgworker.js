@@ -97,7 +97,7 @@ function handleSingleMsgJob(data) {
       result = await setMsgton(
         data.username,
         data.mobiles,
-        data.data.smsid，
+        data.data.smsid,
         ''
       )
       if (result.code !== 0) {
@@ -106,7 +106,7 @@ function handleSingleMsgJob(data) {
       }
       console.log('setMsgton OK')
       // check status ,
-      result = await checkSingleMsgStatus(data.data.data.smsid)
+      result = await checkSingleMsgStatus(data.data.smsid)
 
       if (result.code !== 0) {
         console.error('checkMsgStatus failed')
