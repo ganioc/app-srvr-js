@@ -82,7 +82,7 @@ function handleSingleMsgJob(data) {
         data.mobiles,
         data.content,
         data.data,
-        data.x_id
+        data.data.x_id
       )
 
       // if succeed
@@ -97,8 +97,8 @@ function handleSingleMsgJob(data) {
       result = await setMsgton(
         data.username,
         data.mobiles,
-        data.data.smsid,
-        ''
+        data.data.data.smsid,
+        'none'
       )
       if (result.code !== 0) {
         reject(new Error('setMsgton failed'))
@@ -106,7 +106,7 @@ function handleSingleMsgJob(data) {
       }
       console.log('setMsgton OK')
       // check status ,
-      result = await checkSingleMsgStatus(data.data.smsid)
+      result = await checkSingleMsgStatus(data.data.data.smsid)
 
       if (result.code !== 0) {
         console.error('checkMsgStatus failed')
@@ -141,7 +141,9 @@ function handleSingleMsgJob(data) {
       }
       // update Msgton
       result = await updateMsgton(
+        1,
         msgObj.data.smsid,
+        msgObj.data.batchid,
         msgObj.data.mobile,
         msgObj.data.status)
 
