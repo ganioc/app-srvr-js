@@ -211,9 +211,9 @@ function handleMultiMsgJob(data) {
           reject(new Error('get feedback fail'))
           return
         }
-        if (!msgObj.data.status) {
-          console.error('check status got null result')
-          reject(new Error('get status empty'))
+        if (!msgObj.data || !msgObj.data.status) {
+          console.error('check data or status got null result')
+          reject(new Error('get data or status empty'))
           return
         }
         result = await updateMsgton(
