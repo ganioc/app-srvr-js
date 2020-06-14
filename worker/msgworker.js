@@ -97,7 +97,8 @@ function handleSingleMsgJob(data) {
       result = await setMsgton(
         data.username,
         data.mobiles,
-        data.data
+        data.data.smsid，
+        ''
       )
       if (result.code !== 0) {
         reject(new Error('setMsgton failed'))
@@ -179,7 +180,8 @@ function handleMultiMsgJob(data) {
         result = await setMsgton(
           data.username,
           [data.mobiles[i]],
-          data.data
+          '',
+          data.data.batchid
         )
         if (result.code !== 0) {
           reject(new Error('setMsgton failed'))
