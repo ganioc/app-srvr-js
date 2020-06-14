@@ -81,7 +81,8 @@ function handleSingleMsgJob(data) {
         1,
         data.mobiles,
         data.content,
-        data.data
+        data.data,
+        data.x_id
       )
 
       // if succeed
@@ -163,7 +164,8 @@ function handleMultiMsgJob(data) {
         2,
         data.mobiles,
         data.content,
-        data.data
+        data.data,
+        data.x_id
       )
       if (result.code !== 0) {
         console.error('setMsg failed')
