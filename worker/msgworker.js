@@ -10,6 +10,7 @@ const setMsg = require('../lib/db/setMsg')
 const setMsgton = require('../lib/db/setMsgton')
 const cfgObj = require('../config/config.json');
 const checkSingleMsgStatus = require('../lib/umsc/').checkSingleMsgStatus;
+const checkMultiMsgStatus = require('../lib/umsc').checkMultiMsgStatus;
 const updateMsgton = require('../lib/db/updateMsgton')
 
 let dbIp = 'localhost';
@@ -98,7 +99,7 @@ function handleSingleMsgJob(data) {
         data.username,
         data.mobiles,
         data.data.data.smsid,
-        'none'
+        ''
       )
       if (result.code !== 0) {
         reject(new Error('setMsgton failed'))
@@ -168,7 +169,7 @@ function handleMultiMsgJob(data) {
         data.mobiles,
         data.content,
         data.data,
-        data.x_id
+        data.data.x_id
       )
       if (result.code !== 0) {
         console.error('setMsg failed')
@@ -183,18 +184,53 @@ function handleMultiMsgJob(data) {
           data.username,
           [data.mobiles[i]],
           '',
-          data.data.batchid
+          data.data.data.batchid
         )
         if (result.code !== 0) {
-          reject(new Error('setMsgton failed'))
+          reject(new Error('setMsgton failed ' + i + ' msgton'))
           return
         }
       }
-      console.log('setMsgton OK')
+      console.log('setMsgtons OK')
 
       // result = await checkMultiMsgStatus(data.data.data.smsid)
+      // run several single status 
+      for (let i = 0; i < data.mobiles.length; i++) {
+        result = await checkMultiMsgStatus(data.mobiles[i], data.data.data.batchid)
+        if (result.code !== 0) {
+          console.error('checkMultiMsgStatus failed')
+          reject(new Error('checkMultiMsgStatus failed'))
+          return
+        }
+        let msgObj = result.data;
+        console.log('msgObj:')
+        console.log(msgObj)
 
-      console.log('updateMsgton OK')
+        if (msgObj.result !== 0 && msgObj.result !== "0") {
+          console.error('msgObj result is NOK')
+          reject(new Error('get feedback fail'))
+          return
+        }
+        if (!msgObj.data.status) {
+          console.error('check status got null result')
+          reject(new Error('get status empty'))
+          return
+        }
+        result = await updateMsgton(
+          2,
+          msgObj.data.smsid,
+          msgObj.data.batchid,
+          msgObj.data.mobile,
+          msgObj.data.status)
+
+        if (result.code !== 0) {
+          console.error('updateMsgtons failed')
+          reject(new Error('updateMsgtons failed'))
+          return
+        }
+      }
+
+      console.log('updateMsgtons OK')
       resolve()
     })();
   });
