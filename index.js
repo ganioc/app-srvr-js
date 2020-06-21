@@ -1,6 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const _ = require('lodash');
+// const _ = require('lodash');
 const mongoose = require('mongoose');
 const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
